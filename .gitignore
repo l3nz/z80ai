@@ -1,0 +1,9 @@
+__pycache__
+.claude
+old*
+cpm
+*.pt
+*.COM
+*.com
+packages/
+data/
