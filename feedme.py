@@ -17,14 +17,17 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import time
 from typing import List, Tuple
 from collections import Counter
 
 from libqat import OverflowAwareLinear
 
 
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-print(f"Using device: {device}")
+print(f"Default torch device: {torch.get_default_device()}")
+#device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+#print(f"Using device: {device}")
+
 
 # Character set - built dynamically from training data
 # EOS is always last character
@@ -408,6 +411,8 @@ def train_chunked(chunk_size: int = 1000, epochs_per_chunk: int = 100, lr: float
     except Exception as e:
         print(f"Couldn't load checkpoint: {e}, starting fresh")
 
+    t0 = time.perf_counter()
+
     # Initialize model if needed
     if model is None:
         model = AutoregressiveModel(input_size=256, hidden_sizes=hidden_sizes, num_chars=NUM_CHARS)
@@ -511,6 +516,9 @@ def train_chunked(chunk_size: int = 1000, epochs_per_chunk: int = 100, lr: float
     print(f"Finished: {chunk_num + 1}/{total_chunks} chunks, {total_epochs} total epochs")
     print(f"Best IntAcc: {best_int_acc:.1%} at epoch {best_epoch}")
     print("=" * 60)
+
+    elapsed_ms_per_chunk = ((time.perf_counter() - t0) * 1000) / (epoch + 1)
+    print(f"{elapsed_ms_per_chunk:.2f} ms per epoch")
 
     return model
 

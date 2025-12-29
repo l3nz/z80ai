@@ -1,5 +1,19 @@
 # Training Z80-μLM
 
+### Setup
+
+```bash
+
+uv sync
+
+./do_training.sh
+
+cat data/tinychat.txt |  uv run python feedme.py --epochs 300 --chat
+
+```
+
+Training will be saved in `command_model_autoreg.pt`.
+
 ### Requirements
 
 - Python 3.8+
