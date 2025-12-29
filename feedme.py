@@ -23,6 +23,9 @@ from collections import Counter
 from libqat import OverflowAwareLinear
 
 
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+print(f"Using device: {device}")
+
 # Character set - built dynamically from training data
 # EOS is always last character
 EOS_CHAR = '\x00'
